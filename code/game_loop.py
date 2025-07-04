@@ -1,11 +1,14 @@
 import pygame
 
+from player import Player
 from window import Window
 
 
 class GameLoop:
     def __init__(self, window: Window) -> None:
         self.__window = window
+
+        self.player = Player()
 
         self.__running = True
 
@@ -18,10 +21,12 @@ class GameLoop:
                 self.__window.update_size()
 
     def __update(self) -> None:
-        self.__window.update_clock()
+        delta = self.__window.update_clock() * 0.01
+        self.player.update(delta)
 
     def __draw(self) -> None:
         self.__window.clear(pygame.Color("#232332"))
+        self.player.draw(self.__window.surface)
         pygame.display.update()
 
     def start(self) -> None:
