@@ -42,5 +42,5 @@ class Player:
         self.rect.x += self.velocity.x * delta_time
         self.rect.y += self.velocity.y * delta_time
 
-    def draw(self, surface: pygame.Surface) -> None:
-        surface.blit(self.texture, [self.rect.x, self.rect.y])
+    def draw(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
+        surface.blit(self.texture, [self.rect.x - scroll.x, self.rect.y - scroll.y])
