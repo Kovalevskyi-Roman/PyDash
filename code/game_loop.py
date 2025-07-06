@@ -1,6 +1,7 @@
 import pygame
 
 from camera import Camera
+from level import Level
 from player import Player
 from tile import Tile, TileManager
 from window import Window
@@ -13,7 +14,7 @@ class GameLoop:
 
         self.player = Player()
         self.camera = Camera(self.player, self.__window.size)
-        self.t = Tile(pygame.Vector2(10, 100), "block")
+        self.level = Level("level", self.__tile_manager, self.__window.size)
 
         self.__running = True
 
@@ -25,6 +26,7 @@ class GameLoop:
             if event.type == pygame.WINDOWDISPLAYCHANGED:
                 self.__window.update_size()
                 self.camera.update_window_size()
+                self.level.update_window_size()
 
     def __update(self) -> None:
         delta = self.__window.update_clock() * 0.01
@@ -33,7 +35,7 @@ class GameLoop:
 
     def __draw(self) -> None:
         self.__window.clear(pygame.Color("#232332"))
-        self.__tile_manager.draw_tile(self.__window.surface, self.t, self.camera.scroll)
+        self.level.draw(self.__window.surface, self.camera.scroll)
         self.camera.draw(self.__window.surface)
         pygame.display.update()
 

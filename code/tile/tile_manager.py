@@ -9,8 +9,6 @@ class TileManager:
         self.__tile_textures: dict[str, pygame.Surface] = dict()
         self.__load_textures()
 
-        print(self.__tile_textures)
-
     def __load_textures(self) -> None:
         path = pathlib.Path("../resources/textures/tiles/")
         for item in path.iterdir():
@@ -21,9 +19,9 @@ class TileManager:
             self.__tile_textures.setdefault(item.name.split(".")[0], texture)
 
     def draw_tile(self, surface: pygame.Surface, tile: Tile, scroll: pygame.Vector2) -> None:
-        texture = self.__tile_textures.get(tile.texture_id, None)
+        texture = self.__tile_textures.get(tile.texture_name, None)
         if texture is None:
-            print(f"Tile {tile.texture_id} has no texture!")
+            # print(f"Tile {tile.texture_name} has no texture!")
             return
 
         surface.blit(texture, [tile.position.x - scroll.x, tile.position.y - scroll.y])

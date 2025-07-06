@@ -7,7 +7,7 @@ class Tile:
         self.position: pygame.Vector2 = position
         self.name: str = name
         self.hit_box: pygame.Rect = pygame.Rect(0, 0, 32, 32)
-        self.texture_id: str = ""
+        self.texture_name: str = ""
 
         self.is_solid: bool = True
         self.has_collide_func: bool = False
@@ -26,13 +26,19 @@ class Tile:
                 if tile.get("name") != self.name:
                     continue
 
-                self.texture_id = tile.get("texture_name")
+                self.texture_name = tile.get("texture_name")
                 self.is_solid = tile.get("is_solid", False)
                 self.has_collide_func = tile.get("has_collide_func", False)
                 hit_box = tile.get("hit_box")
                 self.hit_box = pygame.Rect(0, 0, 32, 32)
                 if hit_box is not None:
                     self.hit_box = pygame.Rect(*hit_box)
+
+    def to_json(self) -> dict[str, ...]:
+        return {
+            "name": self.name,
+            "position": [self.position.x, self.position.y]
+        }
 
     def on_collision(self, *args, **kwargs) -> None:
         pass
