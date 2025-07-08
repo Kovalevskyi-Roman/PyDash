@@ -7,8 +7,8 @@ class Player:
         self.texture: pygame.Surface | None = None
 
         self.velocity = pygame.Vector2(0, 0)
-        self.move_speed = 4
-        self.jump_high = -5
+        self.move_speed = 6
+        self.jump_high = -10.6
 
         self.collision = {
             "top": False, "bottom": False, "right": False, "left": False
@@ -37,10 +37,12 @@ class Player:
         self.velocity.x = self.move_speed
 
         if not self.collision.get("bottom"):
-            self.velocity.y += 0.1
+            self.velocity.y += 1.2 * delta_time
+        elif pygame.key.get_pressed()[pygame.K_SPACE]:
+            self.velocity.y = self.jump_high
 
-        self.rect.x += self.velocity.x * delta_time
-        self.rect.y += self.velocity.y * delta_time
+        if self.collision.get("top"):
+            self.velocity.y = -(self.velocity.y / 2)
 
     def draw(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
         surface.blit(self.texture, [self.rect.x - scroll.x, self.rect.y - scroll.y])

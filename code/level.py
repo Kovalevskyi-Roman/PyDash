@@ -1,4 +1,6 @@
 import json
+from sys import set_coroutine_origin_tracking_depth
+
 import pygame
 
 from tile import TileManager
@@ -12,17 +14,34 @@ class Level:
         self.__window_size = window_size
         self.tiles: list[Tile] = list()
 
-        self.load(self.level_name)
+        self.load()
 
     def update_window_size(self) -> None:
         self.__window_size = pygame.display.get_window_size()
 
     def create(self) -> None:
-        for i in range(4):
+        self.tiles.clear()
+
+        for i in range(8):
             self.tiles.append(Tile(pygame.Vector2(i * 32, 32), "block"))
 
+        self.save(self.level_name)
+
     def __sort_tiles(self) -> list:
-        return sorted(self.tiles, key=lambda tile: tile.position.x)
+        sorted_tiles_dict: dict[float, list[Tile]] = dict()
+        for tile in sorted(self.tiles, key=lambda t: t.position.y):
+            if sorted_tiles_dict.get(tile.position.y, None) is None:
+                sorted_tiles_dict.setdefault(tile.position.y, list())
+                sorted_tiles_dict[tile.position.y].append(tile)
+                continue
+
+            sorted_tiles_dict[tile.position.y].append(tile)
+
+        sorted_tiles = list()
+        for key in sorted_tiles_dict.keys():
+            sorted_tiles.extend(sorted_tiles_dict.get(key))
+
+        return sorted_tiles
 
     def __compress_level(self) -> list:
         self.tiles = self.__sort_tiles()
@@ -44,13 +63,16 @@ class Level:
             next_tile: Tile = self.tiles[i + 1]
 
             if tile.position.x != next_tile.position.x - 32 or tile.position.y != next_tile.position.y:
-                level.append(
-                    {"count": count, "tile": first_tile}
-                )
+                if first_tile is None:
+                    level.append(
+                        {"count": count, "tile": tile.to_json()}
+                    )
+                else:
+                    level.append(
+                        {"count": count, "tile": first_tile}
+                    )
                 count = 1
                 first_tile = None
-                if i == len(self.tiles) - 2:
-                    first_tile = next_tile.to_json()
                 continue
 
             count += 1
@@ -63,7 +85,10 @@ class Level:
 
         return level
 
-    def save(self, file_name: str) -> None:
+    def save(self, file_name: str | None = None) -> None:
+        if file_name is None:
+            file_name = self.level_name
+
         data = {
             "tiles": self.__compress_level()
         }
@@ -84,12 +109,16 @@ class Level:
 
         return tiles
 
-    def load(self, file_name: str) -> None:
+    def load(self, file_name: str | None = None) -> None:
+        if file_name is None:
+            file_name = self.level_name
         with open(f"../resources/data/levels/{file_name}.json", "r") as file:
+            self.tiles.clear()
+
             for tile_group in json.load(file).get("tiles"):
                 self.tiles.extend(self.__decompress_tile(tile_group.get("count"), tile_group.get("tile")))
 
-        self.tiles = self.__sort_tiles()
+            self.tiles = self.__sort_tiles()
 
     def draw(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
         for tile in self.tiles:

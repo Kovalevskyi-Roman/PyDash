@@ -1,6 +1,8 @@
 import json
 import pygame
 
+from player import Player
+
 
 class Tile:
     def __init__(self, position: pygame.Vector2, name: str) -> None:
@@ -40,7 +42,7 @@ class Tile:
             "position": [self.position.x, self.position.y]
         }
 
-    def on_collision(self, *args, **kwargs) -> None:
+    def on_collision(self, player: Player, *args, **kwargs) -> None:
         pass
 
     def update(self, delta_time: float, *args, **kwargs) -> None:

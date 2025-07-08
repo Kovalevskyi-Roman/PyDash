@@ -20,7 +20,7 @@ class Window:
 
     def update_size(self) -> None:
         self.size = pygame.display.get_window_size()
-        self.surface = pygame.display.set_mode(self.size)
+        self.surface = pygame.display.set_mode(self.size, flags=pygame.RESIZABLE)
 
     def update_clock(self) -> int:
         return self.clock.tick(self.max_fps)
