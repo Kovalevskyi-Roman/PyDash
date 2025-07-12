@@ -1,10 +1,7 @@
 import pygame
 
-from camera import Camera
-from collider import Collider
-from level import Level
-from player import Player
-from tile import Tile, TileManager
+from game_state import GameState, Menu, LevelList, Play
+from tile import TileManager
 from window import Window
 
 
@@ -13,12 +10,18 @@ class GameLoop:
         self.__window = window
         self.__tile_manager = TileManager()
 
-        self.player = Player()
-        self.camera = Camera(self.player, self.__window.size)
-        self.level = Level("level", self.__tile_manager, self.__window.size)
-        self.collider = Collider(self.player, self.level, self.__window.size)
+        menu = Menu()
+        level_list = LevelList(self.__tile_manager)
+        play = Play(self.__tile_manager, level_list)
 
-        self.level.save()
+        self.__game_states: dict[str, GameState] = {
+            Menu.name: menu,
+            LevelList.name: level_list,
+            Play.name: play
+        }
+        self.__current_game_state = Menu.name
+
+        self.__font = pygame.Font("C:/Windows/Fonts/arial.ttf", 16)
 
         self.__running = True
 
@@ -29,20 +32,19 @@ class GameLoop:
 
             if event.type == pygame.WINDOWRESIZED:
                 self.__window.update_size()
-                self.camera.update_window_size()
-                self.level.update_window_size()
-                self.collider.update_window_size()
+
+                for game_state in self.__game_states.values():
+                    game_state.update_window_size()
 
     def __update(self) -> None:
-        delta = self.__window.update_clock() * 0.01
-        self.player.update(delta)
-        self.camera.update_scroll()
-        self.collider.check_collision(delta, self.camera.scroll)
+        delta_time = self.__window.update_clock() * 0.01
+        self.__current_game_state = self.__game_states.get(self.__current_game_state).update(delta_time)
 
     def __draw(self) -> None:
         self.__window.clear(pygame.Color("#232332"))
-        self.level.draw(self.__window.surface, self.camera.scroll)
-        self.camera.draw(self.__window.surface)
+        self.__game_states.get(self.__current_game_state).draw(self.__window.surface)
+        rendered_fps = self.__font.render(f"fps:{round(self.__window.clock.get_fps(), 1)}", True, "white", 0)
+        self.__window.surface.blit(rendered_fps, [10, 10])
         pygame.display.update()
 
     def start(self) -> None:

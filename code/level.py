@@ -1,5 +1,4 @@
 import json
-from sys import set_coroutine_origin_tracking_depth
 
 import pygame
 
@@ -18,14 +17,6 @@ class Level:
 
     def update_window_size(self) -> None:
         self.__window_size = pygame.display.get_window_size()
-
-    def create(self) -> None:
-        self.tiles.clear()
-
-        for i in range(8):
-            self.tiles.append(Tile(pygame.Vector2(i * 32, 32), "block"))
-
-        self.save(self.level_name)
 
     def __sort_tiles(self) -> list:
         sorted_tiles_dict: dict[float, list[Tile]] = dict()
@@ -112,13 +103,19 @@ class Level:
     def load(self, file_name: str | None = None) -> None:
         if file_name is None:
             file_name = self.level_name
-        with open(f"../resources/data/levels/{file_name}.json", "r") as file:
-            self.tiles.clear()
+        try:
+            with open(f"../resources/data/levels/{file_name}.json", "r") as file:
+                self.tiles.clear()
 
-            for tile_group in json.load(file).get("tiles"):
-                self.tiles.extend(self.__decompress_tile(tile_group.get("count"), tile_group.get("tile")))
+                for tile_group in json.load(file).get("tiles"):
+                    self.tiles.extend(self.__decompress_tile(tile_group.get("count"), tile_group.get("tile")))
 
-            self.tiles = self.__sort_tiles()
+                self.tiles = self.__sort_tiles()
+                self.tiles.append(Tile(pygame.Vector2(0, 32), "floor"))
+                self.tiles.append(Tile(pygame.Vector2(0, -1000), "ceiling"))
+
+        except FileNotFoundError:
+            self.tiles = list()
 
     def draw(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
         for tile in self.tiles:
