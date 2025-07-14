@@ -2,6 +2,7 @@ import json
 
 import pygame
 
+from player import Player
 from tile import TileManager
 from tile import Tile
 
@@ -21,6 +22,9 @@ class Level:
     def __sort_tiles(self) -> list:
         sorted_tiles_dict: dict[float, list[Tile]] = dict()
         for tile in sorted(self.tiles, key=lambda t: t.position.y):
+            if tile.name == "ground" or tile.name == "ceiling":
+                continue
+
             if sorted_tiles_dict.get(tile.position.y, None) is None:
                 sorted_tiles_dict.setdefault(tile.position.y, list())
                 sorted_tiles_dict[tile.position.y].append(tile)
@@ -30,7 +34,7 @@ class Level:
 
         sorted_tiles = list()
         for key in sorted_tiles_dict.keys():
-            sorted_tiles.extend(sorted_tiles_dict.get(key))
+            sorted_tiles.extend(sorted(sorted_tiles_dict.get(key), key=lambda t: t.position.x))
 
         return sorted_tiles
 
@@ -70,9 +74,10 @@ class Level:
             if first_tile is None:
                 first_tile = tile.to_json()
 
-        level.append(
-            {"count": count, "tile": first_tile}
-        )
+        if first_tile is not None:
+            level.append(
+                {"count": count, "tile": first_tile}
+            )
 
         return level
 
@@ -111,11 +116,15 @@ class Level:
                     self.tiles.extend(self.__decompress_tile(tile_group.get("count"), tile_group.get("tile")))
 
                 self.tiles = self.__sort_tiles()
-                self.tiles.append(Tile(pygame.Vector2(0, 32), "floor"))
+                self.tiles.append(Tile(pygame.Vector2(0, 32), "ground"))
                 self.tiles.append(Tile(pygame.Vector2(0, -1000), "ceiling"))
 
         except FileNotFoundError:
             self.tiles = list()
+
+    def update(self, delta_time: float, player: Player, *args, **kwargs) -> None:
+        for tile in self.tiles:
+            tile.update(delta_time, player, *args, **kwargs)
 
     def draw(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
         for tile in self.tiles:

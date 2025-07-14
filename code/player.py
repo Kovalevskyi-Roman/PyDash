@@ -7,7 +7,7 @@ class Player:
         self.texture: pygame.Surface | None = None
 
         self.velocity = pygame.Vector2(0, 0)
-        self.move_speed = 6
+        self.move_speed = 7
         self.jump_high = -10.6
 
         self.collision = {

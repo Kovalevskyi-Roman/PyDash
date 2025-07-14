@@ -1,5 +1,19 @@
 [
     {
+        "name": "ground",
+        "texture_name": "block",
+        "hit_box": null,
+        "is_solid": true,
+        "on_collide_func": false
+    },
+    {
+        "name": "ceil",
+        "texture_name": "block",
+        "hit_box": null,
+        "is_solid": true,
+        "on_collide_func": false
+    },
+    {
         "name": "block",
         "texture_name": "block",
         "hit_box": null,

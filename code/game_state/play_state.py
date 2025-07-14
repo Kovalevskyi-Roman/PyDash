@@ -43,6 +43,8 @@ class Play(GameState):
             2
         )
 
+        self.__first_frame = True
+
     def __reset(self) -> None:
         self.__paused = False
         self.__player = Player()
@@ -73,6 +75,10 @@ class Play(GameState):
         if self.__level.level_name != self.__level_list.level_names[self.__level_list.selected_level]:
             self.__reset()
 
+        if self.__first_frame:
+            self.__reset()
+            self.__first_frame = False
+
         key_down = pygame.key.get_just_pressed()
         if key_down[pygame.K_ESCAPE]:
             self.__paused = not self.__paused
@@ -83,6 +89,7 @@ class Play(GameState):
 
             if self.__back_button.is_pressed(0):
                 self.__reset()
+                self.__first_frame = True
                 return self.__level_list.name
 
             return self.name
@@ -90,6 +97,11 @@ class Play(GameState):
         self.__player.update(delta_time)
         self.__camera.update_scroll()
         self.__collider.check_collision(delta_time, self.__camera.scroll)
+        self.__level.update(delta_time, self.__player)
+
+        if self.__player.collision["right"]:
+            self.__reset()
+            self.__paused = True
 
         return self.name
 

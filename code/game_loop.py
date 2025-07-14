@@ -1,6 +1,6 @@
 import pygame
 
-from game_state import GameState, Menu, LevelList, Play
+from game_state import GameState, Menu, LevelList, Play, PropertyEditor, Editor
 from tile import TileManager
 from window import Window
 
@@ -13,11 +13,15 @@ class GameLoop:
         menu = Menu()
         level_list = LevelList(self.__tile_manager)
         play = Play(self.__tile_manager, level_list)
+        property_editor = PropertyEditor(level_list)
+        editor = Editor(level_list, self.__tile_manager)
 
         self.__game_states: dict[str, GameState] = {
             Menu.name: menu,
             LevelList.name: level_list,
-            Play.name: play
+            Play.name: play,
+            PropertyEditor.name: property_editor,
+            editor.name: editor
         }
         self.__current_game_state = Menu.name
 
@@ -43,8 +47,8 @@ class GameLoop:
     def __draw(self) -> None:
         self.__window.clear(pygame.Color("#232332"))
         self.__game_states.get(self.__current_game_state).draw(self.__window.surface)
-        rendered_fps = self.__font.render(f"fps:{round(self.__window.clock.get_fps(), 1)}", True, "white", 0)
-        self.__window.surface.blit(rendered_fps, [10, 10])
+        rendered_fps = self.__font.render(f"fps:{int(self.__window.clock.get_fps())}", True, "white", 0)
+        self.__window.surface.blit(rendered_fps, [4, 4])
         pygame.display.update()
 
     def start(self) -> None:

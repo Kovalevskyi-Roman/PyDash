@@ -1,3 +1,4 @@
+from os import remove
 import pathlib
 import pygame
 import random
@@ -126,11 +127,18 @@ class LevelList(GameState):
                 continue
 
             self.selected_level = i
-
-            y += 50
+            break
 
         if self.__play_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height):
             return "play"
+
+        if self.__edit_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height):
+            return "property_editor"
+
+        if self.__delete_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height):
+            remove(f"../resources/data/levels/{self.level_names[self.selected_level]}.json")
+            self.level_names.pop(self.selected_level)
+            self.selected_level -= 1
 
         button = pygame.Rect(self.__x_pos + self.__level_btn_width - 40, y + self.__y_scroll, 40,
                              self.__level_btn_height)
@@ -138,5 +146,6 @@ class LevelList(GameState):
             new_level = str(random.Random().randint(0, 2**16))
             self.level_names.append(new_level)
             Level(new_level, self.__tile_manager, self.__window_size).save()
+            self.selected_level = len(self.level_names) - 1
 
         return self.name

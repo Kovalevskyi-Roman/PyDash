@@ -45,5 +45,6 @@ class Tile:
     def on_collision(self, player: Player, *args, **kwargs) -> None:
         pass
 
-    def update(self, delta_time: float, *args, **kwargs) -> None:
-        ...
+    def update(self, delta_time: float, player: Player, *args, **kwargs) -> None:
+        if self.name == "ground" or self.name == "ceiling":
+            self.position.x = player.rect.x
