@@ -23,6 +23,8 @@ class Editor(GameState):
         self.__scroll = pygame.Vector2(-10, -self.__window_size[1] / 2)
         self.__selected_tiles = set()
 
+        self.__first_frame = True
+
     def update_window_size(self) -> None:
         self.__window_size = pygame.display.get_window_size()
 
@@ -31,12 +33,18 @@ class Editor(GameState):
             self.__level.level_name = self.__level_list.level_names[self.__level_list.selected_level]
             self.__level.load()
 
+        if self.__first_frame:
+            self.__level.level_name = self.__level_list.level_names[self.__level_list.selected_level]
+            self.__level.load()
+            self.__first_frame = False
+
         key_press = pygame.key.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
         mouse_pressed = pygame.mouse.get_pressed()
 
         if key_press[pygame.K_ESCAPE]:
             self.__level.save()
+            self.__first_frame = True
             return "property_editor"
 
         if key_press[pygame.K_d]:
@@ -61,6 +69,9 @@ class Editor(GameState):
 
             can_place = True
             for tile in self.__level.tiles:
+                if tile.name == "ground" or tile.name == "ceiling":
+                    continue
+
                 if pygame.Rect(tile.position, tile.hit_box.size).collidepoint(mouse_x, mouse_y):
                     can_place = False
                     if mouse_pressed[2]:
@@ -85,6 +96,9 @@ class Editor(GameState):
     def draw(self, surface: pygame.Surface, *args, **kwargs) -> None:
         surface.fill(0)
         for tile in self.__level.tiles:
+            if tile.name == "ground" or tile.name == "ceiling":
+                continue
+
             if 0 < tile.position.x - self.__scroll.x < self.__window_size[0] and \
                     0 < tile.position.y - self.__scroll.y < self.__window_size[1]:
                 self.__tile_manager.draw_tile(surface, tile, self.__scroll)

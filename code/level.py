@@ -1,10 +1,8 @@
 import json
-
 import pygame
 
 from player import Player
-from tile import TileManager
-from tile import Tile
+from tile import TileManager, Tile
 
 
 class Level:
@@ -33,8 +31,8 @@ class Level:
             sorted_tiles_dict[tile.position.y].append(tile)
 
         sorted_tiles = list()
-        for key in sorted_tiles_dict.keys():
-            sorted_tiles.extend(sorted(sorted_tiles_dict.get(key), key=lambda t: t.position.x))
+        for val in sorted_tiles_dict.values():
+            sorted_tiles.extend(sorted(val, key=lambda t: t.position.x))
 
         return sorted_tiles
 
@@ -77,6 +75,10 @@ class Level:
         if first_tile is not None:
             level.append(
                 {"count": count, "tile": first_tile}
+            )
+        else:
+            level.append(
+                {"count": count, "tile": next_tile.to_json()}
             )
 
         return level
@@ -126,8 +128,30 @@ class Level:
         for tile in self.tiles:
             tile.update(delta_time, player, *args, **kwargs)
 
+    def __get_tile_by_name(self, tile_name: str) -> Tile | None:
+        for tile in self.tiles:
+            if tile.name == tile_name:
+                return tile
+
+        return None
+
+    def draw_ground(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
+        ground_y = self.__get_tile_by_name("ground").position.y
+        pygame.draw.rect(surface, "blue", [
+            0, ground_y - scroll.y, self.__window_size[0], self.__window_size[1] - ground_y - scroll.y
+        ])
+
+    def draw_ceil(self, surface: pygame.Surface, scroll: pygame.Vector2):
+        ceil_y = self.__get_tile_by_name("ceiling").position.y + 32
+        pygame.draw.rect(surface, "red", [
+            0, 0, self.__window_size[0], ceil_y - scroll.y
+        ])
+
     def draw(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
         for tile in self.tiles:
             if 0 < tile.position.x - scroll.x < self.__window_size[0] and \
                     0 < tile.position.y - scroll.y < self.__window_size[1]:
                 self.__tile_manager.draw_tile(surface, tile, scroll)
+
+        self.draw_ground(surface, scroll)
+        self.draw_ceil(surface, scroll)
