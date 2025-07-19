@@ -5,14 +5,15 @@ from player import Player
 
 
 class Tile:
-    def __init__(self, position: pygame.Vector2, name: str) -> None:
+    def __init__(self, position: pygame.Vector2, name: str, *args, **kwargs) -> None:
         self.position: pygame.Vector2 = position
         self.name: str = name
         self.hit_box: pygame.Rect = pygame.Rect(0, 0, 32, 32)
         self.texture_name: str = ""
 
+        self.flipped_x = False
+        self.flipped_y = False
         self.is_solid: bool = True
-        self.has_collide_func: bool = False
 
         self.load()
 
@@ -30,7 +31,6 @@ class Tile:
 
                 self.texture_name = tile.get("texture_name")
                 self.is_solid = tile.get("is_solid", False)
-                self.has_collide_func = tile.get("has_collide_func", False)
                 hit_box = tile.get("hit_box")
                 self.hit_box = pygame.Rect(0, 0, 32, 32)
                 if hit_box is not None:
@@ -39,6 +39,7 @@ class Tile:
     def to_json(self) -> dict[str, ...]:
         return {
             "name": self.name,
+            "flipped": [self.flipped_x, self.flipped_y],
             "position": [self.position.x, self.position.y]
         }
 

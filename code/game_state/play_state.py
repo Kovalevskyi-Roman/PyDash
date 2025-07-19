@@ -30,6 +30,8 @@ class Play(GameState):
         self.__paused_surface = pygame.Surface(self.__window_size)
         self.__paused_surface.fill("#656565")
 
+        self.__show_hit_boxes = True
+
         self.__resume_button = Button(
             (self.__window_size[0] // 2 - 160, self.__window_size[1] // 2 - 40, 80, 80),
             "",
@@ -99,7 +101,7 @@ class Play(GameState):
         self.__collider.check_collision(delta_time, self.__camera.scroll)
         self.__level.update(delta_time, self.__player)
 
-        if self.__player.collision["right"]:
+        if not self.__player.is_alive:
             self.__reset()
             self.__paused = True
 
@@ -108,6 +110,9 @@ class Play(GameState):
     def draw(self, surface: pygame.Surface, *args, **kwargs) -> None:
         self.__level.draw(surface, self.__camera.scroll)
         self.__camera.draw(surface)
+
+        if self.__show_hit_boxes:
+            self.__level.draw_hit_boxes(surface, self.__camera.scroll)
 
         if self.__paused:
             surface.blit(self.__paused_surface, [0, 0], special_flags=pygame.BLEND_SUB)

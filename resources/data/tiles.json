@@ -3,21 +3,96 @@
         "name": "ground",
         "texture_name": "block",
         "hit_box": null,
-        "is_solid": true,
-        "on_collide_func": false
+        "is_solid": true
     },
     {
         "name": "ceiling",
         "texture_name": "block",
         "hit_box": null,
-        "is_solid": true,
-        "on_collide_func": false
+        "is_solid": true
     },
     {
         "name": "block",
         "texture_name": "block",
         "hit_box": null,
-        "is_solid": true,
-        "on_collide_func": false
+        "is_solid": true
+    },
+    {
+        "name": "spike",
+        "texture_name": "spike",
+        "hit_box": [8, 9, 16, 15],
+        "is_solid": false
+    },
+    {
+        "name": "yellow_orb",
+        "texture_name": "yellow_orb",
+        "hit_box": [4, 4, 24, 24],
+        "is_solid": false
+    },
+    {
+        "name": "blue_orb",
+        "texture_name": "blue_orb",
+        "hit_box": [4, 4, 24, 24],
+        "is_solid": false
+    },
+    {
+        "name": "speed_buster_1",
+        "texture_name": "speed_buster_1",
+        "hit_box": [24, 1, 15, 62],
+        "is_solid": false
+    },
+    {
+        "name": "speed_buster_2",
+        "texture_name": "speed_buster_2",
+        "hit_box": [20, 1, 22, 62],
+        "is_solid": false
+    },
+    {
+        "name": "speed_buster_3",
+        "texture_name": "speed_buster_3",
+        "hit_box": [16, 1, 29, 62],
+        "is_solid": false
+    },
+    {
+        "name": "speed_buster_4",
+        "texture_name": "speed_buster_4",
+        "hit_box": [12, 1, 40, 62],
+        "is_solid": false
+    },
+    {
+        "name": "speed_buster_5",
+        "texture_name": "speed_buster_5",
+        "hit_box": [8, 1, 50, 62],
+        "is_solid": false
+    },
+    {
+        "name": "ball_portal",
+        "texture_name": "ball_portal",
+        "hit_box": [10, 2, 50, 94],
+        "is_solid": false
+    },
+    {
+        "name": "cube_portal",
+        "texture_name": "cube_portal",
+        "hit_box": [10, 2, 50, 94],
+        "is_solid": false
+    },
+    {
+        "name": "ship_portal",
+        "texture_name": "ship_portal",
+        "hit_box": [10, 2, 50, 94],
+        "is_solid": false
+    },
+    {
+        "name": "normal_gravity_portal",
+        "texture_name": "normal_gravity_portal",
+        "hit_box": [10, 2, 50, 94],
+        "is_solid": false
+    },
+    {
+        "name": "reversed_gravity_portal",
+        "texture_name": "reversed_gravity_portal",
+        "hit_box": [10, 2, 50, 94],
+        "is_solid": false
     }
 ]

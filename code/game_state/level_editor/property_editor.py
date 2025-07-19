@@ -66,20 +66,23 @@ class PropertyEditor(GameState):
         if self.__text_input_rect.collidepoint(mouse_pos) and mouse_pressed[0]:
             self.__text_input_active = True
 
-        elif mouse_pressed[0]:
+        elif mouse_pressed[0] and self.__text_input_active:
             self.__rename_level()
             self.__text_input_active = False
 
         if self.__play_button.is_pressed(0):
+            self.__first_frame = True
             return "play"
 
         if self.__edit_button.is_pressed(0):
+            self.__first_frame = True
             return "editor"
 
         if self.__back_button.is_pressed(0):
+            self.__first_frame = True
             return self.__level_list.name
 
-        # TEXT INPUTTING  PS: 'DONT PUT ANYTHING BELLOW THIS! ELSE THIS WILL NOT WORK!'
+        # TEXT INPUTTING  PS: 'DON'T PUT ANYTHING BELLOW THIS! ELSE THIS WILL NOT WORK!'
         if not self.__text_input_active:
             pygame.key.stop_text_input()
             return self.name

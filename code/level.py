@@ -55,7 +55,8 @@ class Level:
             tile: Tile = self.tiles[i]
             next_tile: Tile = self.tiles[i + 1]
 
-            if tile.position.x != next_tile.position.x - 32 or tile.position.y != next_tile.position.y:
+            if tile.position.x != next_tile.position.x - 32 or tile.position.y != next_tile.position.y or \
+                    tile.name != next_tile.name or tile.flipped_x != next_tile.flipped_x or tile.flipped_y != next_tile.flipped_y:
                 if first_tile is None:
                     level.append(
                         {"count": count, "tile": tile.to_json()}
@@ -94,12 +95,13 @@ class Level:
         with open(f"../resources/data/levels/{file_name}.json", "w") as file:
             json.dump(data, file, indent=4)
 
-    @staticmethod
-    def __decompress_tile(count: int, tile_data: dict) -> list[Tile]:
+    def __decompress_tile(self, count: int, tile_data: dict) -> list[Tile]:
         tiles = list()
         x_pos = tile_data.get("position")[0]
         while count != 0:
-            tile = Tile(pygame.Vector2(x_pos, tile_data.get("position")[1]), tile_data.get("name"))
+            tile = self.__tile_manager.create_tile(tile_data.get("name"), pygame.Vector2(x_pos, tile_data.get("position")[1]))
+            tile.flipped_x = tile_data.get("flipped")[0]
+            tile.flipped_y = tile_data.get("flipped")[1]
             tiles.append(tile)
 
             x_pos += 32
@@ -146,6 +148,10 @@ class Level:
         pygame.draw.rect(surface, "red", [
             0, 0, self.__window_size[0], ceil_y - scroll.y
         ])
+
+    def draw_hit_boxes(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
+        for tile in self.tiles:
+            self.__tile_manager.draw_tile_hit_box(surface, tile, scroll)
 
     def draw(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
         for tile in self.tiles:

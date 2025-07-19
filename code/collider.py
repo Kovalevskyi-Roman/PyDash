@@ -42,8 +42,7 @@ class Collider:
 
         self.__player.rect.x += self.__player.velocity.x * delta_time
         for t_rect, tile in zip(*self.__get_collided_tiles(scroll)):
-            if tile.has_collide_func:
-                tile.on_collision(self.__player)
+            tile.on_collision(self.__player)
             if not tile.is_solid:
                 continue
 
@@ -57,8 +56,7 @@ class Collider:
 
         self.__player.rect.y += self.__player.velocity.y * delta_time
         for t_rect, tile in zip(*self.__get_collided_tiles(scroll)):
-            if tile.has_collide_func:
-                tile.on_collision(self.__player)
+            tile.on_collision(self.__player)
             if not tile.is_solid:
                 continue
 

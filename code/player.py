@@ -6,9 +6,10 @@ class Player:
         self.rect: pygame.FRect = pygame.FRect(0, 0, 30, 30)
         self.texture: pygame.Surface | None = None
 
-        self.velocity = pygame.Vector2(0, 0)
-        self.move_speed = 8.2
-        self.jump_high = -11
+        self.gravity: float = 2.25
+        self.velocity: pygame.Vector2 = pygame.Vector2(0, 0)
+        self.move_speed: float = 8
+        self.jump_high: float = -16.4
 
         self.collision = {
             "top": False, "bottom": False, "right": False, "left": False
@@ -16,6 +17,8 @@ class Player:
 
         self.__base_color = pygame.Color("#FFE600")
         self.__second_color = pygame.Color("#3844C9")
+
+        self.is_alive = True
 
         self.load_texture()
 
@@ -35,14 +38,16 @@ class Player:
 
     def update(self, delta_time: float) -> None:
         self.velocity.x = self.move_speed
+        self.velocity.y += self.gravity * delta_time
 
-        if not self.collision.get("bottom"):
-            self.velocity.y += 1.2 * delta_time
-        elif pygame.key.get_pressed()[pygame.K_SPACE]:
+        if self.collision.get("bottom") and pygame.key.get_pressed()[pygame.K_SPACE]:
             self.velocity.y = self.jump_high
 
-        if self.collision.get("top"):
-            self.velocity.y = -(self.velocity.y / 2)
+        if self.collision.get("top") and self.gravity > 0:
+            self.is_alive = False
+
+        if self.collision.get("right"):
+            self.is_alive = False
 
     def draw(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
         surface.blit(self.texture, [self.rect.x - scroll.x, self.rect.y - scroll.y])
