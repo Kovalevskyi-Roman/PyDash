@@ -1,7 +1,7 @@
 import pathlib
 import pygame
 
-from .portal import CubePortal, BallPortal, ShipPortal, NormalGravityPortal, ReversedGravityPortal
+from .portal import CubePortal, BallPortal, ShipPortal, NormalGravityPortal, ReversedGravityPortal, WavePortal
 from .speed_buster import SpeedBusterX1, SpeedBusterX2, SpeedBusterX3, SpeedBusterX4, SpeedBusterX5
 from .blue_orb import BlueOrb
 from .yellow_orb import YellowOrb
@@ -55,6 +55,9 @@ class TileManager:
 
             case "ship_portal":
                 return ShipPortal(position)
+
+            case "wave_portal":
+                return WavePortal(position)
 
             case "normal_gravity_portal":
                 return NormalGravityPortal(position)

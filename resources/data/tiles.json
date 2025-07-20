@@ -84,6 +84,12 @@
         "is_solid": false
     },
     {
+        "name": "wave_portal",
+        "texture_name": "wave_portal",
+        "hit_box": [10, 2, 50, 94],
+        "is_solid": false
+    },
+    {
         "name": "normal_gravity_portal",
         "texture_name": "normal_gravity_portal",
         "hit_box": [10, 2, 50, 94],

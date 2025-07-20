@@ -135,7 +135,8 @@ class LevelList(GameState):
         if self.__edit_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height):
             return "property_editor"
 
-        if self.__delete_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height):
+        if self.__delete_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height) and \
+                len(self.level_names) > 1:
             remove(f"../resources/data/levels/{self.level_names[self.selected_level]}.json")
             self.level_names.pop(self.selected_level)
             self.selected_level -= 1

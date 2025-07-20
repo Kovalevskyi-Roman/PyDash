@@ -1,9 +1,11 @@
 import pygame
 
+from game_mode import GameMode, Cube, Ship, Ball, Wave
+
 
 class Player:
     def __init__(self) -> None:
-        self.rect: pygame.FRect = pygame.FRect(0, 0, 30, 30)
+        self.rect: pygame.FRect = pygame.FRect(0, 0, 32, 32)
         self.texture: pygame.Surface | None = None
 
         self.gravity: float = 2.25
@@ -15,39 +17,39 @@ class Player:
             "top": False, "bottom": False, "right": False, "left": False
         }
 
-        self.__base_color = pygame.Color("#FFE600")
-        self.__second_color = pygame.Color("#3844C9")
+        self.colors = {
+            pygame.Color(255, 0, 0).hex: pygame.Color("#FFE600"),
+            pygame.Color(0, 255, 0).hex: pygame.Color("#3844C9"),
+            pygame.Color(0, 0, 255).hex: pygame.Color("#0000FF")
+        }
+
+        self.game_modes: dict[str, GameMode] = {
+            Cube.name: Cube(self),
+            Ship.name: Ship(self),
+            Ball.name: Ball(self),
+            Wave.name: Wave(self)
+        }
+        self.game_mode = Cube.name
 
         self.is_alive = True
 
-        self.load_texture()
-
-    def __set_colors(self) -> None:
-        for y in range(16):
-            for x in range(16):
-                if self.texture.get_at([x, y]) == pygame.Color(255, 0, 0, 255):
-                    self.texture.set_at([x, y], self.__base_color)
-
-                elif self.texture.get_at([x, y]) == pygame.Color(0, 255, 0, 255):
-                    self.texture.set_at([x, y], self.__second_color)
-
-    def load_texture(self) -> None:
-        self.texture = pygame.image.load("../resources/textures/player/cube_mode.png").convert_alpha()
-        self.__set_colors()
-        self.texture = pygame.transform.scale_by(self.texture, 2)
-
-    def update(self, delta_time: float) -> None:
+    def update(self, delta_time: float, scroll: pygame.Vector2) -> None:
         self.velocity.x = self.move_speed
-        self.velocity.y += self.gravity * delta_time
 
-        if self.collision.get("bottom") and pygame.key.get_pressed()[pygame.K_SPACE]:
-            self.velocity.y = self.jump_high
+        if self.game_mode != Wave.name:
+            self.game_modes.get(Wave.name).first_update = True
 
-        if self.collision.get("top") and self.gravity > 0:
-            self.is_alive = False
+        self.game_modes.get(self.game_mode).update(delta_time, scroll)
 
         if self.collision.get("right"):
             self.is_alive = False
 
+    def draw_hit_box(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
+        pygame.draw.rect(surface, "green", [
+            self.rect.x - scroll.x, self.rect.y - scroll.y,
+            self.rect.width, self.rect.height
+        ], 2)
+
     def draw(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
-        surface.blit(self.texture, [self.rect.x - scroll.x, self.rect.y - scroll.y])
+        self.game_modes.get(self.game_mode).draw(surface, scroll)
+        self.draw_hit_box(surface, scroll)

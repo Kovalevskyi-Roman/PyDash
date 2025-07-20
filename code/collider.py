@@ -63,9 +63,11 @@ class Collider:
             if self.__player.velocity.y > 0:
                 self.__player.rect.bottom = t_rect.top
                 self.__player.collision["bottom"] = True
+                self.__player.velocity.y = 0
 
             elif self.__player.velocity.y < 0:
                 self.__player.rect.top = t_rect.bottom
                 self.__player.collision["top"] = True
+                self.__player.velocity.y = 0
 
 

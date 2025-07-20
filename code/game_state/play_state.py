@@ -96,7 +96,7 @@ class Play(GameState):
 
             return self.name
 
-        self.__player.update(delta_time)
+        self.__player.update(delta_time, self.__camera.scroll)
         self.__camera.update_scroll()
         self.__collider.check_collision(delta_time, self.__camera.scroll)
         self.__level.update(delta_time, self.__player)

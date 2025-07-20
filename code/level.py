@@ -45,7 +45,7 @@ class Level:
 
         if len(self.tiles) == 1:
             level.append(
-                {"count": 1, "tile": self.tiles[0].get_json()}
+                {"count": 1, "tile": self.tiles[0].to_json()}
             )
             return level
 
