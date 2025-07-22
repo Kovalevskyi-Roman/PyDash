@@ -52,4 +52,3 @@ class Player:
 
     def draw(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
         self.game_modes.get(self.game_mode).draw(surface, scroll)
-        self.draw_hit_box(surface, scroll)

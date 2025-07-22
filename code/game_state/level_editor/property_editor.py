@@ -13,7 +13,7 @@ class PropertyEditor(GameState):
         self.__window_size = pygame.display.get_window_size()
         self.__level_list = level_list
 
-        self.__font = pygame.Font("C:/Windows/Fonts/arial.ttf", 20)
+        self.__font = pygame.Font("../resources/fonts/regular.ttf", 20)
         self.__text_input_text = str(self.__level_list.level_names[self.__level_list.selected_level])
         self.__text_input_rect = pygame.Rect(0, 50, 450, 50)
         self.__text_input_rect.x = self.__window_size[0] // 2 - self.__text_input_rect.width // 2

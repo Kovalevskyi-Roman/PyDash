@@ -68,37 +68,37 @@
     {
         "name": "ball_portal",
         "texture_name": "ball_portal",
-        "hit_box": [10, 2, 50, 94],
+        "hit_box": [10, 2, 40, 94],
         "is_solid": false
     },
     {
         "name": "cube_portal",
         "texture_name": "cube_portal",
-        "hit_box": [10, 2, 50, 94],
+        "hit_box": [10, 2, 40, 94],
         "is_solid": false
     },
     {
         "name": "ship_portal",
         "texture_name": "ship_portal",
-        "hit_box": [10, 2, 50, 94],
+        "hit_box": [10, 2, 40, 94],
         "is_solid": false
     },
     {
         "name": "wave_portal",
         "texture_name": "wave_portal",
-        "hit_box": [10, 2, 50, 94],
+        "hit_box": [10, 2, 40, 94],
         "is_solid": false
     },
     {
         "name": "normal_gravity_portal",
         "texture_name": "normal_gravity_portal",
-        "hit_box": [10, 2, 50, 94],
+        "hit_box": [14, 2, 20, 94],
         "is_solid": false
     },
     {
         "name": "reversed_gravity_portal",
         "texture_name": "reversed_gravity_portal",
-        "hit_box": [10, 2, 50, 94],
+        "hit_box": [14, 2, 20, 94],
         "is_solid": false
     }
 ]

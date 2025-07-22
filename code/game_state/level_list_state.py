@@ -17,7 +17,7 @@ class LevelList(GameState):
         self.__tile_manager = tile_manager
         self.__window_size = pygame.display.get_window_size()
 
-        self.__font = pygame.Font("C:/Windows/Fonts/arial.ttf", 20)
+        self.__font = pygame.Font("../resources/fonts/regular.ttf", 20)
         self.__level_btn_width = self.__window_size[0] // 1.3
         self.__level_btn_half_width = self.__level_btn_width // 2
         self.__level_btn_height = 40
@@ -68,7 +68,7 @@ class LevelList(GameState):
                 [self.__x_pos, y + self.__y_scroll, self.__level_btn_width, self.__level_btn_height]
             )
             level_name = self.__font.render(level, True, 0)
-            surface.blit(level_name, [self.__x_pos + 10, y + self.__level_btn__half_height - 10 + self.__y_scroll])
+            surface.blit(level_name, [self.__x_pos + 10, y + self.__level_btn__half_height - 14 + self.__y_scroll])
             y += 50
 
         pygame.draw.rect(
@@ -78,7 +78,7 @@ class LevelList(GameState):
         )
         level_name = self.__font.render("+", True, 0)
         surface.blit(level_name, [self.__x_pos + self.__level_btn_width - 26,
-                                  y + self.__level_btn__half_height - 10 + self.__y_scroll])
+                                  y + self.__level_btn__half_height + self.__y_scroll - 14])
 
         self.__panel.fill("#52CC14")
         self.__panel.blit(self.__font.render(self.level_names[self.selected_level], True, 0),
@@ -98,7 +98,7 @@ class LevelList(GameState):
         surface.blit(self.__panel, [0, self.__window_size[1] - self.__panel.height])
 
     def update(self, delta_time: float, *args, **kwargs) -> str:
-        key_down = pygame.key.get_just_pressed()
+        key_down = pygame.key.get_pressed()
 
         if key_down[pygame.K_ESCAPE]:
             return "menu"

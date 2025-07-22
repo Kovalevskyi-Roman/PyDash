@@ -3,7 +3,7 @@ import pygame
 
 class Button:
     def __init__(self, rect: tuple[int, int, int, int], color: str = "", texture_path: str = "", texture_scale: int = 1) -> None:
-        self.rect = pygame.Rect(*rect)
+        self.rect = pygame.Rect(rect)
         self.color = color
         self.texture_path = texture_path
         self.texture_scale = texture_scale

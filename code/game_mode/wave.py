@@ -16,13 +16,14 @@ class Wave(GameMode):
 
     def update(self, delta_time: float, scroll: pygame.Vector2) -> None:
         key_press = pygame.key.get_pressed()
+        mouse_press = pygame.mouse.get_pressed()
         self.player.rect.width = 24
         self.player.rect.height = 24
 
         if any(self.player.collision.values()):
             self.player.is_alive = False
 
-        space_press = key_press[pygame.K_SPACE]
+        space_press = (key_press[pygame.K_SPACE] or mouse_press[0])
         if space_press != self.__space_press or self.__gravity != self.player.gravity:
             self.points.append(self.player.rect.center)
         self.__space_press = space_press
@@ -37,19 +38,21 @@ class Wave(GameMode):
     def __draw_lines(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
         need_to_remove = []
         color = self.player.colors.get(pygame.Color(0, 255, 0).hex)
-        for i in range(len(self.points) - 1):
-            curr_point = self.points[i]
-            next_point = self.points[i + 1]
+        if len(self.points) > 1:
+            for i in range(len(self.points) - 1):
+                curr_point = self.points[i]
+                next_point = self.points[i + 1]
 
-            curr_point = [curr_point[0] - scroll.x, curr_point[1] - scroll.y]
-            next_point = [next_point[0] - scroll.x, next_point[1] - scroll.y]
-            if next_point[0] < 0:
-                need_to_remove.append(self.points[i])
+                curr_point = [curr_point[0] - scroll.x, curr_point[1] - scroll.y]
+                next_point = [next_point[0] - scroll.x, next_point[1] - scroll.y]
+                if next_point[0] < 0:
+                    need_to_remove.append(self.points[i])
 
-            pygame.draw.line(surface, color, curr_point, next_point, 10)
+                pygame.draw.line(surface, color, curr_point, next_point, 10)
 
-        pygame.draw.line(surface, color, next_point, [self.player.rect.center[0] - scroll.x, self.player.rect.center[1] - scroll.y], 10)
-
+            pygame.draw.line(surface, color, next_point,
+                             [self.player.rect.center[0] - scroll.x, self.player.rect.center[1] - scroll.y], 10)
+            return
         for value in need_to_remove:
             self.points.remove(value)
 

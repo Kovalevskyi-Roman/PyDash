@@ -1,0 +1,7 @@
+{
+    "show_hit_boxes": false,
+    "show_player_hit_box": false,
+    "auto_play": true,
+    "show_fps": false,
+    "fps": 60
+}

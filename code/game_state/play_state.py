@@ -6,6 +6,7 @@ from collider import Collider
 from level import Level
 from player import Player
 from tile import TileManager
+from .settings_state import Settings
 from .level_list_state import LevelList
 from .game_state import GameState
 
@@ -13,11 +14,12 @@ from .game_state import GameState
 class Play(GameState):
     name = "play"
 
-    def __init__(self, tile_manager: TileManager, level_list: LevelList, *args, **kwargs) -> None:
+    def __init__(self, tile_manager: TileManager, level_list: LevelList, settings: Settings, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.__window_size = pygame.display.get_window_size()
         self.__tile_manager = tile_manager
         self.__level_list = level_list
+        self.__settings = settings
 
         self.__player = Player()
         self.__camera = Camera(self.__player, self.__window_size)
@@ -29,8 +31,6 @@ class Play(GameState):
         self.__paused = False
         self.__paused_surface = pygame.Surface(self.__window_size)
         self.__paused_surface.fill("#656565")
-
-        self.__show_hit_boxes = True
 
         self.__resume_button = Button(
             (self.__window_size[0] // 2 - 160, self.__window_size[1] // 2 - 40, 80, 80),
@@ -103,15 +103,19 @@ class Play(GameState):
 
         if not self.__player.is_alive:
             self.__reset()
-            self.__paused = True
+            self.__paused = not self.__settings.auto_play.value
+            if self.__settings.auto_play.value:
+                pygame.time.wait(100)
 
         return self.name
 
     def draw(self, surface: pygame.Surface, *args, **kwargs) -> None:
         self.__level.draw(surface, self.__camera.scroll)
         self.__camera.draw(surface)
+        if self.__settings.show_player_hit_box.value:
+            self.__player.draw_hit_box(surface, self.__camera.scroll)
 
-        if self.__show_hit_boxes:
+        if self.__settings.show_hit_boxes.value:
             self.__level.draw_hit_boxes(surface, self.__camera.scroll)
 
         if self.__paused:

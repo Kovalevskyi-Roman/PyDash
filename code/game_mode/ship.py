@@ -15,7 +15,8 @@ class Ship(GameMode):
         self.player.rect.height = 22
         self.player.rect.width = 32
         key_press = pygame.key.get_pressed()
+        mouse_press = pygame.mouse.get_pressed()
 
         self.player.velocity.y += self.player.gravity * delta_time
-        if key_press[pygame.K_SPACE]:
+        if key_press[pygame.K_SPACE] or mouse_press[0]:
             self.player.velocity.y += self.jump_high if self.player.gravity > 0 else -self.jump_high
