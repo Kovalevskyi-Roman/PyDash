@@ -17,7 +17,7 @@ class SpeedBusterX2(Tile):
         super().__init__(position, "speed_buster_2", *args, **kwargs)
 
     def on_collision(self, player: Player, *args, **kwargs) -> None:
-        player.move_speed = 11
+        player.move_speed = 16
 
 
 class SpeedBusterX3(Tile):
@@ -25,7 +25,7 @@ class SpeedBusterX3(Tile):
         super().__init__(position, "speed_buster_3", *args, **kwargs)
 
     def on_collision(self, player: Player, *args, **kwargs) -> None:
-        player.move_speed = 15
+        player.move_speed = 24
 
 
 class SpeedBusterX4(Tile):
@@ -33,7 +33,7 @@ class SpeedBusterX4(Tile):
         super().__init__(position, "speed_buster_4", *args, **kwargs)
 
     def on_collision(self, player: Player, *args, **kwargs) -> None:
-        player.move_speed = 20
+        player.move_speed = 32
 
 
 class SpeedBusterX5(Tile):
@@ -41,4 +41,4 @@ class SpeedBusterX5(Tile):
         super().__init__(position, "speed_buster_5", *args, **kwargs)
 
     def on_collision(self, player: Player, *args, **kwargs) -> None:
-        player.move_speed = 26
+        player.move_speed = 40

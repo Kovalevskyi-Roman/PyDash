@@ -17,7 +17,7 @@ class Level:
     def update_window_size(self) -> None:
         self.__window_size = pygame.display.get_window_size()
 
-    def __sort_tiles(self) -> list:
+    def sort_tiles(self) -> list:
         sorted_tiles_dict: dict[float, list[Tile]] = dict()
         for tile in sorted(self.tiles, key=lambda t: t.position.y):
             if tile.name == "ground" or tile.name == "ceiling":
@@ -37,7 +37,7 @@ class Level:
         return sorted_tiles
 
     def __compress_level(self) -> list:
-        self.tiles = self.__sort_tiles()
+        self.tiles = self.sort_tiles()
         level = list()
 
         if len(self.tiles) < 1:
@@ -89,6 +89,7 @@ class Level:
             file_name = self.level_name
 
         data = {
+            "record": 0,
             "tiles": self.__compress_level()
         }
 
@@ -119,7 +120,7 @@ class Level:
                 for tile_group in json.load(file).get("tiles"):
                     self.tiles.extend(self.__decompress_tile(tile_group.get("count"), tile_group.get("tile")))
 
-                self.tiles = self.__sort_tiles()
+                self.tiles = self.sort_tiles()
                 self.tiles.append(Tile(pygame.Vector2(0, 32), "ground"))
                 self.tiles.append(Tile(pygame.Vector2(0, -1000), "ceiling"))
 
@@ -130,7 +131,7 @@ class Level:
         for tile in self.tiles:
             tile.update(delta_time, player, *args, **kwargs)
 
-    def __get_tile_by_name(self, tile_name: str) -> Tile | None:
+    def get_tile_by_name(self, tile_name: str) -> Tile | None:
         for tile in self.tiles:
             if tile.name == tile_name:
                 return tile
@@ -138,13 +139,13 @@ class Level:
         return None
 
     def draw_ground(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
-        ground_y = self.__get_tile_by_name("ground").position.y
+        ground_y = self.get_tile_by_name("ground").position.y
         pygame.draw.rect(surface, "blue", [
             0, ground_y - scroll.y, self.__window_size[0], self.__window_size[1] - ground_y - scroll.y
         ])
 
     def draw_ceil(self, surface: pygame.Surface, scroll: pygame.Vector2):
-        ceil_y = self.__get_tile_by_name("ceiling").position.y + 32
+        ceil_y = self.get_tile_by_name("ceiling").position.y + 32
         pygame.draw.rect(surface, "red", [
             0, 0, self.__window_size[0], ceil_y - scroll.y
         ])

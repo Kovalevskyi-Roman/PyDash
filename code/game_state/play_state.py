@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 from button import Button
@@ -5,6 +7,7 @@ from camera import Camera
 from collider import Collider
 from level import Level
 from player import Player
+from progress_bar import ProgressBar
 from tile import TileManager
 from .settings_state import Settings
 from .level_list_state import LevelList
@@ -31,6 +34,8 @@ class Play(GameState):
         self.__paused = False
         self.__paused_surface = pygame.Surface(self.__window_size)
         self.__paused_surface.fill("#656565")
+
+        self.__font = pygame.Font("../resources/fonts/regular.ttf", 14)
 
         self.__resume_button = Button(
             (self.__window_size[0] // 2 - 160, self.__window_size[1] // 2 - 40, 80, 80),
@@ -81,6 +86,10 @@ class Play(GameState):
             self.__reset()
             self.__first_frame = False
 
+        if ProgressBar.get_level_progress(self.__level, self.__player) >= 100:
+            ProgressBar.set_level_record(self.__level, 100)
+            return "property_editor"
+
         key_down = pygame.key.get_just_pressed()
         if key_down[pygame.K_ESCAPE]:
             self.__paused = not self.__paused
@@ -90,6 +99,10 @@ class Play(GameState):
                 self.__paused = False
 
             if self.__back_button.is_pressed(0):
+                ProgressBar.set_level_record(
+                    self.__level,
+                    int(ProgressBar.get_level_progress(self.__level, self.__player))
+                )
                 self.__reset()
                 self.__first_frame = True
                 return self.__level_list.name
@@ -102,6 +115,10 @@ class Play(GameState):
         self.__level.update(delta_time, self.__player)
 
         if not self.__player.is_alive:
+            ProgressBar.set_level_record(
+                self.__level,
+                math.ceil(ProgressBar.get_level_progress(self.__level, self.__player))
+            )
             self.__reset()
             self.__paused = not self.__settings.auto_play.value
             if self.__settings.auto_play.value:
@@ -117,6 +134,9 @@ class Play(GameState):
 
         if self.__settings.show_hit_boxes.value:
             self.__level.draw_hit_boxes(surface, self.__camera.scroll)
+
+        text = self.__font.render(f"{ProgressBar.get_level_progress(self.__level, self.__player)}%", True, "white", "black")
+        surface.blit(text, [self.__window_size[0] / 2 - text.width / 2, 1])
 
         if self.__paused:
             surface.blit(self.__paused_surface, [0, 0], special_flags=pygame.BLEND_SUB)

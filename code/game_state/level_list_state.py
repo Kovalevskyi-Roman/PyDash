@@ -130,6 +130,7 @@ class LevelList(GameState):
             break
 
         if self.__play_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height):
+            pygame.time.wait(120)
             return "play"
 
         if self.__edit_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height):

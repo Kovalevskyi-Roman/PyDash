@@ -43,7 +43,7 @@ class Tile:
             "position": [self.position.x, self.position.y]
         }
 
-    def on_collision(self, player: Player, *args, **kwargs) -> None:
+    def on_collision(self, player: Player, level, *args, **kwargs) -> None:
         pass
 
     def update(self, delta_time: float, player: Player, *args, **kwargs) -> None:

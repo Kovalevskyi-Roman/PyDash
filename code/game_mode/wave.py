@@ -17,8 +17,8 @@ class Wave(GameMode):
     def update(self, delta_time: float, scroll: pygame.Vector2) -> None:
         key_press = pygame.key.get_pressed()
         mouse_press = pygame.mouse.get_pressed()
-        self.player.rect.width = 24
-        self.player.rect.height = 24
+        self.player.rect.width = 22
+        self.player.rect.height = 22
 
         if any(self.player.collision.values()):
             self.player.is_alive = False

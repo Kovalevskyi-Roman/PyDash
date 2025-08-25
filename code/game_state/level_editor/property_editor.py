@@ -72,6 +72,7 @@ class PropertyEditor(GameState):
 
         if self.__play_button.is_pressed(0):
             self.__first_frame = True
+            pygame.time.wait(120)
             return "play"
 
         if self.__edit_button.is_pressed(0):
