@@ -9,13 +9,13 @@ class Camera:
         self.window_size = window_size
         self.half_win_size = (self.window_size[0] / 2, self.window_size[1] / 2)
         self.scroll = pygame.Vector2(0, 0)
-        self.scroll_smooth = 20
+        self.scroll_smooth = 100
 
         self.set_scroll()
 
-    def update_scroll(self) -> None:
-        self.scroll.x += (self.__player.rect.x - self.scroll.x - self.half_win_size[0]) / self.scroll_smooth
-        self.scroll.y += (self.__player.rect.y - self.scroll.y - self.half_win_size[1] - 40) / self.scroll_smooth
+    def update_scroll(self, delta_time: float) -> None:
+        self.scroll.x += self.__player.rect.x - self.scroll.x - self.half_win_size[0]
+        self.scroll.y += (self.__player.rect.y - self.scroll.y - self.half_win_size[1] - 40) / (self.scroll_smooth * delta_time)
 
     def set_scroll(self) -> None:
         self.scroll.x = self.__player.rect.x - self.half_win_size[0]

@@ -9,7 +9,7 @@ class Ship(GameMode):
     def __init__(self, player):
         super().__init__(player)
         self.load_texture(self.player.colors)
-        self.jump_high = -0.8
+        self.jump_high = -(self.player.gravity ** 1.6)
 
     def update(self, delta_time: float, scroll: pygame.Vector2) -> None:
         self.player.rect.height = 22
@@ -19,4 +19,4 @@ class Ship(GameMode):
 
         self.player.velocity.y += self.player.gravity * delta_time
         if key_press[pygame.K_SPACE] or mouse_press[0]:
-            self.player.velocity.y += self.jump_high if self.player.gravity > 0 else -self.jump_high
+            self.player.velocity.y += (self.jump_high if self.player.gravity > 0 else -self.jump_high) * delta_time

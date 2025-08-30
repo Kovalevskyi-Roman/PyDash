@@ -14,11 +14,11 @@ class TilePanel:
         self.__selection.fill("#22FF22")
         self.__selection.set_alpha(100)
 
-        self.y_pos = self.__window_size[1] // 1.4
+        self.y_pos = self.__window_size[1] // 1.2  # then smaller then lower
 
     def update_window_size(self) -> None:
         self.__window_size = pygame.display.get_window_size()
-        self.y_pos = self.__window_size[1] // 1.4
+        self.y_pos = self.__window_size[1] // 1.2
 
     def draw(self, surface: pygame.Surface) -> None:
         pygame.draw.rect(surface, "gray", [0, self.y_pos, self.__window_size[0], self.__window_size[1] - self.y_pos])

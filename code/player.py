@@ -8,10 +8,9 @@ class Player:
         self.rect: pygame.FRect = pygame.FRect(0, 0, 32, 32)
         self.texture: pygame.Surface | None = None
 
-        self.gravity: float = 2.25
+        self.gravity: float = 4.5
+        self.move_speed: float = 9
         self.velocity: pygame.Vector2 = pygame.Vector2(0, 0)
-        self.move_speed: float = 8
-        self.jump_high: float = -16.4
 
         self.collision = {
             "top": False, "bottom": False, "right": False, "left": False

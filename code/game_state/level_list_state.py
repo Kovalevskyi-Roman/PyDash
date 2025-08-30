@@ -1,3 +1,4 @@
+import json
 from os import remove
 import pathlib
 import pygame
@@ -30,9 +31,11 @@ class LevelList(GameState):
         self.__edit_btn = Button((self.__panel.width // 2 - 50, self.__panel.height // 2 - 20, 100, 40), "#AADD29")
         self.__delete_btn = Button((self.__panel.width // 2 + 100, self.__panel.height // 2 - 20, 100, 40), "#AADD29")
 
-        self.level_names = []
+        self.levels = []
         self.selected_level = 0
         self.__load_levels()
+
+        self.__first_frame = True
 
     def update_window_size(self) -> None:
         self.__window_size = pygame.display.get_window_size()
@@ -52,23 +55,24 @@ class LevelList(GameState):
             if not item.is_file():
                 continue
 
-            split_name = item.name.split(".")
-            if split_name[1] != "json":
-                continue
-
-            self.level_names.append(split_name[0])
+            with open(str(item), "r") as file:
+                self.levels.append(
+                    [item.name.removesuffix(".json"), json.load(file).get("record")]
+                )
 
     def draw(self, surface: pygame.Surface, *args, **kwargs) -> None:
         y = 10
-        for i in range(len(self.level_names)):
-            level = self.level_names[i]
+        for i in range(len(self.levels)):
+            level = self.levels[i]
             pygame.draw.rect(
                 surface,
                 "#118807" if self.selected_level != i else "#66FF29",
                 [self.__x_pos, y + self.__y_scroll, self.__level_btn_width, self.__level_btn_height]
             )
-            level_name = self.__font.render(level, True, 0)
+            level_name = self.__font.render(level[0], True, 0)
             surface.blit(level_name, [self.__x_pos + 10, y + self.__level_btn__half_height - 14 + self.__y_scroll])
+            level_progress = self.__font.render(f"{level[1]}% / 100%", True, 0)
+            surface.blit(level_progress, [self.__x_pos + self.__level_btn_width - level_progress.width - 10, y + self.__level_btn__half_height - 14 + self.__y_scroll])
             y += 50
 
         pygame.draw.rect(
@@ -81,7 +85,7 @@ class LevelList(GameState):
                                   y + self.__level_btn__half_height + self.__y_scroll - 14])
 
         self.__panel.fill("#52CC14")
-        self.__panel.blit(self.__font.render(self.level_names[self.selected_level], True, 0),
+        self.__panel.blit(self.__font.render(self.levels[self.selected_level][0], True, 0),
                           [10, self.__panel.height // 2 - 10])
         self.__panel.blit(self.__font.render("Selected:", True, 0),
                           [10, self.__panel.height // 2 - 30])
@@ -98,12 +102,19 @@ class LevelList(GameState):
         surface.blit(self.__panel, [0, self.__window_size[1] - self.__panel.height])
 
     def update(self, delta_time: float, *args, **kwargs) -> str:
+
+        if self.__first_frame:
+            self.levels.clear()
+            self.__load_levels()
+            self.__first_frame = False
+
         key_down = pygame.key.get_pressed()
 
         if key_down[pygame.K_ESCAPE]:
+            self.__first_frame = True
             return "menu"
 
-        can_scroll_down: bool = len(self.level_names) * 50 + self.__y_scroll + 100 + self.__panel.height > self.__window_size[1]
+        can_scroll_down: bool = len(self.levels) * 50 + self.__y_scroll + 100 + self.__panel.height > self.__window_size[1]
         can_scroll_up: bool = self.__y_scroll < 0
         mouse_wheel = pygame.event.get(pygame.MOUSEWHEEL)
         if mouse_wheel:
@@ -114,10 +125,11 @@ class LevelList(GameState):
                 self.__y_scroll -= 20
 
         mouse_pos = pygame.mouse.get_pos()
-        mouse_pressed = pygame.mouse.get_just_pressed()
+        mouse_just_pressed = pygame.mouse.get_just_pressed()
+        mouse_pressed = pygame.mouse.get_pressed()
 
         y = 10
-        for i in range(len(self.level_names)):
+        for i in range(len(self.levels)):
             if not mouse_pressed[0]:
                 y += 50
                 continue
@@ -129,25 +141,27 @@ class LevelList(GameState):
             self.selected_level = i
             break
 
-        if self.__play_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height):
+        if self.__play_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height) or key_down[pygame.K_RETURN]:
             pygame.time.wait(120)
+            self.__first_frame = True
             return "play"
 
         if self.__edit_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height):
+            self.__first_frame = True
             return "property_editor"
 
         if self.__delete_btn.is_pressed(0, 0, -self.__window_size[1] + self.__panel.height) and \
-                len(self.level_names) > 1:
-            remove(f"../resources/data/levels/{self.level_names[self.selected_level]}.json")
-            self.level_names.pop(self.selected_level)
+                len(self.levels) > 1:
+            remove(f"../resources/data/levels/{self.levels[self.selected_level][0]}.json")
+            self.levels.pop(self.selected_level)
             self.selected_level -= 1
 
         button = pygame.Rect(self.__x_pos + self.__level_btn_width - 40, y + self.__y_scroll, 40,
                              self.__level_btn_height)
-        if mouse_pressed[0] and button.collidepoint(mouse_pos):
+        if mouse_just_pressed[0] and button.collidepoint(mouse_pos):
             new_level = str(random.Random().randint(0, 2**16))
-            self.level_names.append(new_level)
+            self.levels.append([new_level, 0])
             Level(new_level, self.__tile_manager, self.__window_size).save()
-            self.selected_level = len(self.level_names) - 1
+            self.selected_level = len(self.levels) - 1
 
         return self.name

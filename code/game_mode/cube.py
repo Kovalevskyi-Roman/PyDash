@@ -9,7 +9,7 @@ class Cube(GameMode):
     def __init__(self, player):
         super().__init__(player)
         self.load_texture(self.player.colors)
-        self.jump_high = -16.4
+        self.jump_high = -(self.player.gravity * self.player.gravity + self.player.gravity)
 
     def update(self, delta_time: float, scroll: pygame.Vector2) -> None:
         self.player.rect.height = 32
@@ -18,7 +18,7 @@ class Cube(GameMode):
         mouse_press = pygame.mouse.get_pressed()
 
         self.player.velocity.y += self.player.gravity * delta_time
-        # IF GRAVITY > 0
+        # GRAVITY > 0
         if self.player.gravity > 0:
 
             if self.player.collision["bottom"] and (key_press[pygame.K_SPACE] or mouse_press[0]):

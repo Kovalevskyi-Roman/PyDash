@@ -29,7 +29,7 @@ class Play(GameState):
         self.__level = Level("", self.__tile_manager, self.__window_size)
         self.__collider = Collider(self.__player, self.__level, self.__window_size)
 
-        self.load_level(self.__level_list.level_names[self.__level_list.selected_level])
+        self.load_level(self.__level_list.levels[self.__level_list.selected_level][0])
 
         self.__paused = False
         self.__paused_surface = pygame.Surface(self.__window_size)
@@ -59,7 +59,7 @@ class Play(GameState):
         self.__level = Level("", self.__tile_manager, self.__window_size)
         self.__collider = Collider(self.__player, self.__level, self.__window_size)
 
-        self.load_level(self.__level_list.level_names[self.__level_list.selected_level])
+        self.load_level(self.__level_list.levels[self.__level_list.selected_level][0])
 
     def load_level(self, level_name: str) -> None:
         self.__level.level_name = level_name
@@ -79,7 +79,7 @@ class Play(GameState):
         self.__back_button.rect.topleft = (self.__window_size[0] // 2 + 80, self.__window_size[1] // 2 - 40)
 
     def update(self, delta_time: float, *args, **kwargs) -> str:
-        if self.__level.level_name != self.__level_list.level_names[self.__level_list.selected_level]:
+        if self.__level.level_name != self.__level_list.levels[self.__level_list.selected_level][0]:
             self.__reset()
 
         if self.__first_frame:
@@ -88,6 +88,7 @@ class Play(GameState):
 
         if ProgressBar.get_level_progress(self.__level, self.__player) >= 100:
             ProgressBar.set_level_record(self.__level, 100)
+            self.__first_frame = True
             return "property_editor"
 
         key_down = pygame.key.get_just_pressed()
@@ -110,7 +111,7 @@ class Play(GameState):
             return self.name
 
         self.__player.update(delta_time, self.__camera.scroll)
-        self.__camera.update_scroll()
+        self.__camera.update_scroll(delta_time)
         self.__collider.check_collision(delta_time, self.__camera.scroll)
         self.__level.update(delta_time, self.__player)
 
@@ -122,7 +123,7 @@ class Play(GameState):
             self.__reset()
             self.__paused = not self.__settings.auto_play.value
             if self.__settings.auto_play.value:
-                pygame.time.wait(100)
+                pygame.time.wait(200)
 
         return self.name
 

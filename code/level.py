@@ -139,16 +139,18 @@ class Level:
         return None
 
     def draw_ground(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
-        ground_y = self.get_tile_by_name("ground").position.y
-        pygame.draw.rect(surface, "blue", [
-            0, ground_y - scroll.y, self.__window_size[0], self.__window_size[1] - ground_y - scroll.y
-        ])
+        if self.get_tile_by_name("ground") is not None:
+            ground_y = self.get_tile_by_name("ground").position.y
+            pygame.draw.rect(surface, "blue", [
+                0, ground_y - scroll.y, self.__window_size[0], self.__window_size[1] - ground_y - scroll.y
+            ])
 
-    def draw_ceil(self, surface: pygame.Surface, scroll: pygame.Vector2):
-        ceil_y = self.get_tile_by_name("ceiling").position.y + 32
-        pygame.draw.rect(surface, "red", [
-            0, 0, self.__window_size[0], ceil_y - scroll.y
-        ])
+    def draw_ceil(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
+        if self.get_tile_by_name("ceiling") is not None:
+            ceil_y = self.get_tile_by_name("ceiling").position.y + 32
+            pygame.draw.rect(surface, "red", [
+                0, 0, self.__window_size[0], ceil_y - scroll.y
+            ])
 
     def draw_hit_boxes(self, surface: pygame.Surface, scroll: pygame.Vector2) -> None:
         for tile in self.tiles:

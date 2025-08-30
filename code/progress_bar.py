@@ -6,7 +6,7 @@ from player import Player
 
 
 class ProgressBar:
-    offset = 10 * 32
+    offset = 16 * 32
 
     @staticmethod
     def get_level_record(level: Level) -> int:

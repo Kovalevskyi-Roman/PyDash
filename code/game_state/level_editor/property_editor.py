@@ -14,7 +14,7 @@ class PropertyEditor(GameState):
         self.__level_list = level_list
 
         self.__font = pygame.Font("../resources/fonts/regular.ttf", 20)
-        self.__text_input_text = str(self.__level_list.level_names[self.__level_list.selected_level])
+        self.__text_input_text = str(self.__level_list.levels[self.__level_list.selected_level][0])
         self.__text_input_rect = pygame.Rect(0, 50, 450, 50)
         self.__text_input_rect.x = self.__window_size[0] // 2 - self.__text_input_rect.width // 2
         self.__text_input_surface = pygame.Surface(self.__text_input_rect.size)
@@ -36,9 +36,9 @@ class PropertyEditor(GameState):
         )
 
     def __rename_level(self) -> None:
-        path = Path(f"../resources/data/levels/{self.__level_list.level_names[self.__level_list.selected_level]}.json")
+        path = Path(f"../resources/data/levels/{self.__level_list.levels[self.__level_list.selected_level][0]}.json")
         path.rename(f"../resources/data/levels/{self.__text_input_text}.json")
-        self.__level_list.level_names[self.__level_list.selected_level] = self.__text_input_text
+        self.__level_list.levels[self.__level_list.selected_level][0] = self.__text_input_text
 
     def update_window_size(self) -> None:
         self.__window_size = pygame.display.get_window_size()
@@ -55,20 +55,13 @@ class PropertyEditor(GameState):
         mouse_pressed = pygame.mouse.get_just_pressed()
         key_down = pygame.key.get_just_pressed()
         if self.__first_frame:
-            self.__text_input_text = str(self.__level_list.level_names[self.__level_list.selected_level])
+            self.__text_input_text = str(self.__level_list.levels[self.__level_list.selected_level][0])
 
         self.__first_frame = False
 
         if key_down[pygame.K_ESCAPE]:
             self.__first_frame = True
             return self.__level_list.name
-
-        if self.__text_input_rect.collidepoint(mouse_pos) and mouse_pressed[0]:
-            self.__text_input_active = True
-
-        elif mouse_pressed[0] and self.__text_input_active:
-            self.__rename_level()
-            self.__text_input_active = False
 
         if self.__play_button.is_pressed(0):
             self.__first_frame = True
@@ -82,6 +75,13 @@ class PropertyEditor(GameState):
         if self.__back_button.is_pressed(0):
             self.__first_frame = True
             return self.__level_list.name
+
+        if self.__text_input_rect.collidepoint(mouse_pos) and mouse_pressed[0]:
+            self.__text_input_active = True
+
+        elif mouse_pressed[0] and self.__text_input_active:
+            self.__rename_level()
+            self.__text_input_active = False
 
         # TEXT INPUTTING  PS: 'DON'T PUT ANYTHING BELLOW THIS! ELSE THIS WILL NOT WORK!'
         if not self.__text_input_active:

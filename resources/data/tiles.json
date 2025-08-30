@@ -20,7 +20,7 @@
     {
         "name": "spike",
         "texture_name": "spike",
-        "hit_box": [8, 9, 16, 15],
+        "hit_box": [9, 11, 15, 15],
         "is_solid": false
     },
     {

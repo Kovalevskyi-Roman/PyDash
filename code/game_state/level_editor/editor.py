@@ -17,7 +17,7 @@ class Editor(GameState):
         self.__tile_manager = tile_manager
         self.__tile_panel = TilePanel(self.__tile_manager)
 
-        self.__level = Level(self.__level_list.level_names[self.__level_list.selected_level],
+        self.__level = Level(self.__level_list.levels[self.__level_list.selected_level][0],
                              self.__tile_manager, self.__window_size)
 
         self.__level.load()
@@ -44,12 +44,12 @@ class Editor(GameState):
             tile.flipped_y = not tile.flipped_y if y else tile.flipped_y
 
     def update(self, delta_time: float, *args, **kwargs) -> str:
-        if self.__level.level_name != self.__level_list.level_names[self.__level_list.selected_level]:
-            self.__level.level_name = self.__level_list.level_names[self.__level_list.selected_level]
+        if self.__level.level_name != self.__level_list.levels[self.__level_list.selected_level][0]:
+            self.__level.level_name = self.__level_list.levels[self.__level_list.selected_level][0]
             self.__level.load()
 
         if self.__first_frame:
-            self.__level.level_name = self.__level_list.level_names[self.__level_list.selected_level]
+            self.__level.level_name = self.__level_list.levels[self.__level_list.selected_level][0]
             self.__level.load()
             self.__first_frame = False
 
